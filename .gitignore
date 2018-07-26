@@ -1,11 +1,4 @@
-# Compiled class file
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -13,11 +6,36 @@
 # Package Files #
 *.jar
 *.war
-*.nar
 *.ear
-*.zip
-*.tar.gz
-*.rar
-
+/target/
+**/target/*
+**/.vscode/*
+.classpath
+.bak
+.settings
+.project
+**/build/*
+**/.idea/*
+**/*.iml
+**/*.log
+**/*.bak
+**/*.tar.gz
+**/node_modules/
+**/src/app/**/*.js.map
+**/src/app/**/*.js
+**/src/main.js
+**/src/main.js.map
+!**/src/app/assets/**/*.js
+**/logs/*
+**/!.gitkeep
+**/.gitignore
+!.gitingore
+**/bower_components/
+**/tmp/
+**/.DS_Store
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+**/activemq-data/
+.metadata/
+*.swp
+**/package-lock.json
