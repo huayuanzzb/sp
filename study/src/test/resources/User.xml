@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bingoal.study.mybatis.entity.UserMapper">
+    <select id="selectUserEntity" resultType="User" parameterType="java.lang.Integer">
+      select * from User where id = #{id}
+    </select>
+
+
+    <!-- resultMap在mybatis中是一个强大的对象, mybatis在查出结果集后, 会自动将结果组装到一个resultMap中,
+    如果select中定义了resultType, 则基于属性名将resultMap转换为resultType -->
+    <resultMap id="userMap" type="User">
+        <!-- id 和 result都可以将一个列的值映射到一个简单数据类型 -->
+        <!-- http://www.mybatis.org/mybatis-3/zh/sqlmap-xml.html -->
+        <!-- TODO 文档上说 id 可以在比较对象时提高性能, 但并未理解 -->
+        <id property="id" column="id" javaType="int" jdbcType="INTEGER"></id>
+        <result property="name" column="alias_name"/>
+    </resultMap>
+
+    <select id="selectUserMap" resultMap="userMap" parameterType="java.lang.Integer">
+      select id, name as alias_name from User where id = #{id}
+    </select>
+
+    <!-- resultMap可以是很复杂的, 属性中包含对象, 集合等元素 -->
+    <!-- TODO 添加一个复杂的resultMap -->
+
+    <insert id="insertUser" useGeneratedKeys="true" parameterType="bingoal.study.mybatis.entity.User">
+        insert into User (id, name) values (#{id}, #{name})
+    </insert>
+</mapper>
