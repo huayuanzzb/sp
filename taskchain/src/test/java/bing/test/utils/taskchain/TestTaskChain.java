@@ -16,4 +16,11 @@ public class TestTaskChain {
         chain.execute();
     }
 
+    @Test
+    public void testChainWithoutParam(){
+        Chain chain = new ChainBuilder().appendNode(param -> System.out.println("node1: " + param)).
+                appendNode(param -> System.out.println("node2: " + param)).build();
+        chain.execute();
+    }
+
 }
