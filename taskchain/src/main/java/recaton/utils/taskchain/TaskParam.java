@@ -1,4 +1,4 @@
-package bing.utils.taskchain;
+package recaton.utils.taskchain;
 
 public class TaskParam {
 

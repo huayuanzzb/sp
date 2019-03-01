@@ -1,7 +1,7 @@
-package bing.test.utils.taskchain;
+package recaton.test.utils.taskchain;
 
-import bing.utils.taskchain.Chain;
-import bing.utils.taskchain.ChainBuilder;
+import recaton.utils.taskchain.Chain;
+import recaton.utils.taskchain.ChainBuilder;
 import org.junit.Test;
 
 import java.util.Arrays;

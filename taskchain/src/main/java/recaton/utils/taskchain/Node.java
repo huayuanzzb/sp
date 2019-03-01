@@ -1,4 +1,4 @@
-package bing.utils.taskchain;
+package recaton.utils.taskchain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
