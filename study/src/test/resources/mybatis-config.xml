@@ -11,7 +11,7 @@
 
     <!-- 定义类型别名, 代替全限定名, 方便使用 -->
     <typeAliases>
-        <typeAlias type="bingoal.study.mybatis.entity.User" alias="User"></typeAlias>
+        <typeAlias type="recaton.study.mybatis.entity.User" alias="User"></typeAlias>
     </typeAliases>
 
     <environments default="development">

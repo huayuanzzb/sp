@@ -26,7 +26,7 @@
     <!-- resultMap可以是很复杂的, 属性中包含对象, 集合等元素 -->
     <!-- TODO 添加一个复杂的resultMap -->
 
-    <insert id="insertUser" useGeneratedKeys="true" parameterType="bingoal.study.mybatis.entity.User">
+    <insert id="insertUser" useGeneratedKeys="true" parameterType="recaton.study.mybatis.entity.User">
         insert into User (id, name) values (#{id}, #{name})
     </insert>
 </mapper>

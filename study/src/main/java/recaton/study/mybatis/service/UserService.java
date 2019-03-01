@@ -1,6 +1,6 @@
-package bingoal.study.mybatis.service;
+package recaton.study.mybatis.service;
 
-import bingoal.study.mybatis.entity.User;
+import recaton.study.mybatis.entity.User;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;

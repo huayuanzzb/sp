@@ -1,4 +1,4 @@
-package bingoal.study.mybatis.entity;
+package recaton.study.mybatis.entity;
 
 public class User {
 
