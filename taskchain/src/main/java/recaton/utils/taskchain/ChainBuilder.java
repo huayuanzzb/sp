@@ -2,7 +2,7 @@ package recaton.utils.taskchain;
 
 public class ChainBuilder {
 
-    private Chain chain = new Chain();
+    private Chain chain = Chain.getInstance();
 
     /**
      * 向chain中添加Node
@@ -10,7 +10,7 @@ public class ChainBuilder {
      * @return chain
      */
     public synchronized ChainBuilder appendNode(TaskExecutor executor){
-        Node node = new Node(chain, executor);
+        Node node = new Node(chain, executor, x -> chain.nodeDone(x));
         chain.nodes.add(node);
         return this;
     }

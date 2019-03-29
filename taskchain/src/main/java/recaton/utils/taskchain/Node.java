@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class Node {
@@ -16,6 +17,7 @@ public class Node {
 
     private Predicate canToNext;
     private Predicate<Chain> hasNext;
+    private Consumer callback;
 
     private int corePoolSize = 5;
     private int maxPoolSize = 5;
@@ -31,6 +33,8 @@ public class Node {
             super.afterExecute(r, t);
             printException(r, t);
         }
+
+
     };
 
     private TaskExecutor taskExecutor;
@@ -41,17 +45,18 @@ public class Node {
     private static final int RUNNING = (INIT + 1);
     private static final int STOP = (RUNNING + 1);
 
-    Node(Chain chain, TaskExecutor taskExecutor) {
-        this(chain, taskExecutor, o -> true);
+    Node(Chain chain, TaskExecutor taskExecutor, Consumer callback) {
+        this(chain, taskExecutor, o -> true, callback);
     }
 
-    private Node(Chain chain, TaskExecutor taskExecutor, Predicate canToNext) {
+    private Node(Chain chain, TaskExecutor taskExecutor, Predicate canToNext, Consumer callback) {
         this.seq = chain.nodes.size() + 1;
         this.chain = chain;
         this.taskExecutor = taskExecutor;
         this.canToNext = canToNext;
         this.hasNext = chain1 -> chain1.size() > seq;
         executor.allowCoreThreadTimeOut(true);
+        this.callback = callback;
     }
 
     private void printException(Runnable r, Throwable t) {
@@ -108,16 +113,31 @@ public class Node {
         @Override
         @SuppressWarnings("unchecked")
         public void run() {
+            // 每个 Node 执行时间不确定，需要在此不断寻找还未执行到该 Node 的参数
             while (status == RUNNING) {
                 List<ArrayList<TaskParam>> lists = findParams();
-                if(lists.get(0).size() == 0){
-                    status = STOP;
-                }
+                final CountDownLatch latch = new CountDownLatch(lists.get(1).size());
+
                 for(TaskParam param : lists.get(1)) {
-                    executor.submit(() -> taskExecutor.execute(param.getValue()));
+                    executor.submit(() -> {
+                        taskExecutor.execute(param.getValue());
+                        latch.countDown();
+                    });
                     afterExecute(param);
                     if(hasNext.test(chain) && canToNext.test(param)){
                         toNext();
+                    }
+                }
+
+                if(lists.get(0).size() == 0){
+                    // 所有参数均已至少执行到当前 Node, 当前 Node 可以置为STOP, 不再寻找新参数
+                    status = STOP;
+                    if (callback != null) {
+                        // 在此等待当前 Node 中已加载的参数执行完成
+                        while (latch.getCount() > 0) {
+                            // 无限等待
+                        }
+                        callback.accept(this);
                     }
                 }
             }
