@@ -1,11 +1,7 @@
 package recaton.utils.taskchain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class Node {
@@ -17,7 +13,6 @@ public class Node {
 
     private Predicate canToNext;
     private Predicate<Chain> hasNext;
-    private Consumer callback;
 
     private int corePoolSize = 5;
     private int maxPoolSize = 5;
@@ -31,118 +26,86 @@ public class Node {
         @Override
         protected void afterExecute(Runnable r, Throwable t) {
             super.afterExecute(r, t);
-            printException(r, t);
-        }
-
-
+            if (t == null && r instanceof Future<?>) {
+                try {
+                    Future<?> future = (Future<?>) r;
+                    if (future.isDone())
+                        Node.this.afterExecute((TaskParam) future.get());
+                } catch (ExecutionException | InterruptedException ee) {
+                    t = ee.getCause();
+                    t.printStackTrace();
+                }
+            }
+            }
+//            if (t == null && r instanceof Future<?>) {
+//                try {
+//                    Future<?> future = (Future<?>) r;
+//                    if (future.isDone())
+//                        Node.this.afterExecute((TaskParam)future.get());
+//                } catch (CancellationException ce) {
+//                    t = ce;
+//                } catch (ExecutionException ee) {
+//                    t = ee.getCause();
+//                } catch (InterruptedException ie) {
+//                    Thread.currentThread().interrupt(); // ignore/reset
+//                }
+//            }
+//            if (t != null)
+//                System.out.println(t.getMessage() + t);
     };
 
     private TaskExecutor taskExecutor;
 
-    // Node 的工作状态
-    private int status;
-    private static final int INIT = 0;
-    private static final int RUNNING = (INIT + 1);
-    private static final int STOP = (RUNNING + 1);
-
-    Node(Chain chain, TaskExecutor taskExecutor, Consumer callback) {
-        this(chain, taskExecutor, o -> true, callback);
+    Node(Chain chain, TaskExecutor taskExecutor) {
+        this(chain, taskExecutor, o -> true);
     }
 
-    private Node(Chain chain, TaskExecutor taskExecutor, Predicate canToNext, Consumer callback) {
+    private Node(Chain chain, TaskExecutor taskExecutor, Predicate canToNext) {
         this.seq = chain.nodes.size() + 1;
         this.chain = chain;
         this.taskExecutor = taskExecutor;
         this.canToNext = canToNext;
         this.hasNext = chain1 -> chain1.size() > seq;
         executor.allowCoreThreadTimeOut(true);
-        this.callback = callback;
     }
 
-    private void printException(Runnable r, Throwable t) {
-        if (t == null && r instanceof Future<?>) {
+    void fire(TaskParam param){
+        executor.submit(() -> {
             try {
-                Future<?> future = (Future<?>) r;
-                if (future.isDone())
-                    future.get();
-            } catch (CancellationException ce) {
-                t = ce;
-            } catch (ExecutionException ee) {
-                t = ee.getCause();
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt(); // ignore/reset
+                return taskExecutor.execute(param);
+            } catch (Exception e) {
+                param.setException(e);
+                param.setStopAt(seq);
             }
-        }
-        if (t != null)
-            System.out.println(t.getMessage() + t);
-//            Log.print(t.getMessage() + t);
-    }
-
-    void fire() {
-        if(status == INIT || status == STOP) {
-            status = RUNNING;
-            new Thread(new Finder(), "node-" + seq + "-finder").start();
-        }
-    }
-
-    private void toNext(){
-        chain.nodes.get(seq).fire();
-    }
-
-    private synchronized List<ArrayList<TaskParam>> findParams(){
-        ArrayList<TaskParam> list1 = new ArrayList<>();
-        ArrayList<TaskParam> list2 = new ArrayList<>();
-        chain.getParams().forEach(item -> {
-            if(item.getNextNode() < seq) {
-                list1.add(item);
-            }else if(item.getNextNode() == seq) {
-                list2.add(item);
-            }
+            return param;
         });
-        return Arrays.asList(list1, list2);
     }
+
+    void shutdown(){
+        executor.shutdown();
+        try {
+            if(executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)) {
+                if(hasNext.test(chain)) {
+                    next().shutdown();
+                }
+            }
+        } catch (InterruptedException e) {
+            // todo handle exception
+            e.printStackTrace();
+        }
+    }
+
+    private Node next() {
+        return chain.nodes.get(seq);
+    }
+
 
     private synchronized void afterExecute(TaskParam param) {
-        param.setNextNode(seq + 1);
-    }
-
-    /**
-     * 查找任务的线程
-     */
-    class Finder implements Runnable {
-        @Override
-        @SuppressWarnings("unchecked")
-        public void run() {
-            // 每个 Node 执行时间不确定，需要在此不断寻找还未执行到该 Node 的参数
-            while (status == RUNNING) {
-                List<ArrayList<TaskParam>> lists = findParams();
-                final CountDownLatch latch = new CountDownLatch(lists.get(1).size());
-
-                for(TaskParam param : lists.get(1)) {
-                    executor.submit(() -> {
-                        taskExecutor.execute(param.getValue());
-                        latch.countDown();
-                    });
-                    afterExecute(param);
-                    if(hasNext.test(chain) && canToNext.test(param)){
-                        toNext();
-                    }
-                }
-
-                if(lists.get(0).size() == 0){
-                    // 所有参数均已至少执行到当前 Node, 当前 Node 可以置为STOP, 不再寻找新参数
-                    status = STOP;
-                    if (callback != null) {
-                        // 在此等待当前 Node 中已加载的参数执行完成
-                        while (latch.getCount() > 0) {
-                            // 无限等待
-                        }
-                        callback.accept(this);
-                    }
-                }
-            }
+        if(hasNext.test(chain) && param.getStopAt() == 0 && canToNext.test(param)){
+            next().fire(param);
         }
     }
+
 
     /**
      * copy from <code>Executors.DefaultThreadFactory</code>

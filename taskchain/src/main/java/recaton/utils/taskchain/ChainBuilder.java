@@ -10,7 +10,7 @@ public class ChainBuilder {
      * @return chain
      */
     public synchronized ChainBuilder appendNode(TaskExecutor executor){
-        Node node = new Node(chain, executor, x -> chain.nodeDone(x));
+        Node node = new Node(chain, executor);
         chain.nodes.add(node);
         return this;
     }

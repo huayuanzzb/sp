@@ -1,28 +1,36 @@
 package recaton.utils.taskchain;
 
-public class TaskParam {
+public class TaskParam<V> {
 
-    private Object value;
-    private int nextNode;
+    private V value;
+    private int stopAt;
+    private Exception exception;
 
-    public TaskParam(Object value) {
+    public TaskParam(V value) {
         this.value = value;
-        this.nextNode = 1;
     }
 
-    public Object getValue() {
+    public V getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(V value) {
         this.value = value;
     }
 
-    public int getNextNode() {
-        return nextNode;
+    public int getStopAt() {
+        return stopAt;
     }
 
-    public void setNextNode(int nextNode) {
-        this.nextNode = nextNode;
+    public void setStopAt(int stopAt) {
+        this.stopAt = stopAt;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
+
+    public void setException(Exception exception) {
+        this.exception = exception;
     }
 }
