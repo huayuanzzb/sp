@@ -3,9 +3,9 @@ package recaton.utils.taskchain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Chain {
 
@@ -35,7 +35,7 @@ public class Chain {
         return params;
     }
 
-    public synchronized void setParams(Collection<Object> value) {
+    public synchronized void setParams(List value) {
         params.clear();
         value.forEach(item -> params.add(new TaskParam(item)));
     }

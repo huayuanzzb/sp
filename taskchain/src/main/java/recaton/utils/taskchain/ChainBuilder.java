@@ -10,8 +10,18 @@ public class ChainBuilder {
      * @return chain
      */
     public synchronized ChainBuilder appendNode(TaskExecutor executor){
-        Node node = new Node(chain, executor);
-        chain.nodes.add(node);
+        Node node = new Node(executor);
+        bind(node);
+        return this;
+    }
+
+    public synchronized ChainBuilder appendNode(Node node){
+        bind(node);
+        return this;
+    }
+
+    private synchronized ChainBuilder bind(Node node) {
+        chain.nodes.add(node.bindToChain(chain));
         return this;
     }
 

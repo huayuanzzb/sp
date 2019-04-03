@@ -33,4 +33,13 @@ public class TaskParam<V> {
     public void setException(Exception exception) {
         this.exception = exception;
     }
+
+    @Override
+    public String toString() {
+        return "TaskParam{" +
+                "value=" + value +
+                ", stopAt=node" + stopAt +
+                ", exception=" + exception.getMessage() +
+                '}';
+    }
 }

@@ -6,17 +6,18 @@ import java.util.function.Predicate;
 
 public class Node {
 
+
     // 序号
     private int seq;
 
     private Chain chain;
 
-    private Predicate canToNext;
+    protected Predicate canToNext;
     private Predicate<Chain> hasNext;
 
     private int corePoolSize = 5;
     private int maxPoolSize = 5;
-    private int keepAliveTime = 10;
+    private int keepAliveTime = Integer.MAX_VALUE;
     private ThreadFactory tf = new TaskNodeThreadFactory();
     // 多线程处理器
     private ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS,
@@ -36,37 +37,26 @@ public class Node {
                     t.printStackTrace();
                 }
             }
-            }
-//            if (t == null && r instanceof Future<?>) {
-//                try {
-//                    Future<?> future = (Future<?>) r;
-//                    if (future.isDone())
-//                        Node.this.afterExecute((TaskParam)future.get());
-//                } catch (CancellationException ce) {
-//                    t = ce;
-//                } catch (ExecutionException ee) {
-//                    t = ee.getCause();
-//                } catch (InterruptedException ie) {
-//                    Thread.currentThread().interrupt(); // ignore/reset
-//                }
-//            }
-//            if (t != null)
-//                System.out.println(t.getMessage() + t);
+        }
     };
 
     private TaskExecutor taskExecutor;
 
-    Node(Chain chain, TaskExecutor taskExecutor) {
-        this(chain, taskExecutor, o -> true);
+    public Node(TaskExecutor taskExecutor) {
+        this(taskExecutor, o -> true);
     }
 
-    private Node(Chain chain, TaskExecutor taskExecutor, Predicate canToNext) {
-        this.seq = chain.nodes.size() + 1;
-        this.chain = chain;
+    public Node(TaskExecutor taskExecutor, Predicate canToNext) {
         this.taskExecutor = taskExecutor;
         this.canToNext = canToNext;
-        this.hasNext = chain1 -> chain1.size() > seq;
         executor.allowCoreThreadTimeOut(true);
+    }
+
+    Node bindToChain(Chain chain) {
+        this.seq = chain.nodes.size() + 1;
+        this.chain = chain;
+        this.hasNext = chain1 -> chain1.size() > seq;
+        return this;
     }
 
     void fire(TaskParam param){
