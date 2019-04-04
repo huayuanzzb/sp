@@ -6,9 +6,7 @@ import recaton.utils.taskchain.Chain;
 import recaton.utils.taskchain.ChainBuilder;
 import recaton.utils.taskchain.TaskParam;
 
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
