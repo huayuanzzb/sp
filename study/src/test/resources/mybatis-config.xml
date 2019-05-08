@@ -6,7 +6,7 @@
 
     <!-- 设置mybatis的日志 -->
     <settings>
-        <setting name="logImpl" value="LOG4J"/>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
     </settings>
 
     <!-- 定义类型别名, 代替全限定名, 方便使用 -->
@@ -19,7 +19,7 @@
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
                 <property name="driver" value="org.h2.Driver"/>
-                <property name="url" value="jdbc:h2:~/test"/>
+                <property name="url" value="jdbc:h2:./h2/test_db"/>
                 <property name="username" value="sa"/>
                 <property name="password" value=""/>
             </dataSource>
@@ -28,6 +28,8 @@
 
     <mappers>
         <mapper resource="User.xml"/>
+        <mapper resource="Company.xml"/>
+        <mapper resource="Address.xml"/>
     </mappers>
 
 </configuration>

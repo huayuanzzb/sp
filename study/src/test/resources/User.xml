@@ -19,14 +19,34 @@
         <result property="name" column="alias_name"/>
     </resultMap>
 
-    <select id="selectUserMap" resultMap="userMap" parameterType="java.lang.Integer">
-      select id, name as alias_name from User where id = #{id}
+    <insert id="insertUsers" useGeneratedKeys="true" parameterType="java.util.List">
+        insert into user(company_id, name) values
+        <foreach collection="list" item="element" index="index" separator=",">
+             (#{element.companyId}, #{element.name})
+        </foreach>
+    </insert>
+
+    <!-- 使用${}字符串替换，易造成sql注入 -->
+    <select id="getUsersByName1" resultMap="userMap" parameterType="java.lang.String">
+      select id, name as alias_name from User where name = '${name}'
+    </select>
+
+    <select id="getUsersByName" resultMap="userMap" parameterType="java.lang.String">
+        select id, name as alias_name from User where name = #{name}
     </select>
 
     <!-- resultMap可以是很复杂的, 属性中包含对象, 集合等元素 -->
     <!-- TODO 添加一个复杂的resultMap -->
 
-    <insert id="insertUser" useGeneratedKeys="true" parameterType="recaton.study.mybatis.entity.User">
+    <insert id="insertUserEntity" useGeneratedKeys="true" parameterType="recaton.study.mybatis.entity.User">
         insert into User (id, name) values (#{id}, #{name})
     </insert>
+
+    <insert id="insertUserMap" useGeneratedKeys="true" parameterType="map">
+        insert into User (id, name) values (#{id}, #{name})
+    </insert>
+
+    <delete id="deleteUsers">
+        delete from user
+    </delete>
 </mapper>

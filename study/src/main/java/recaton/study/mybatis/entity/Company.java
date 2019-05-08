@@ -1,17 +1,18 @@
 package recaton.study.mybatis.entity;
 
-public class User {
+import java.util.List;
+
+public class Company {
 
     private Integer id;
-    private Integer companyId;
     private String name;
+    private List<User> users;
 
-    public User() {
+    public Company() {
     }
 
-    public User(Integer id, Integer companyId, String name) {
+    public Company(Integer id, String name) {
         this.id = id;
-        this.companyId = companyId;
         this.name = name;
     }
 
@@ -23,14 +24,6 @@ public class User {
         this.id = id;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
-
     public String getName() {
         return name;
     }
@@ -39,13 +32,20 @@ public class User {
         this.name = name;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Company{" +
                 "id=" + id +
-                ", companyId=" + companyId +
                 ", name='" + name + '\'' +
+                ", users=" + users +
                 '}';
     }
 }
