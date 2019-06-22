@@ -1,12 +1,20 @@
 package recaton.study.mybatis.entity;
 
+import java.util.List;
+
 public class User {
 
     private Integer id;
     private Integer companyId;
     private String name;
+    private List<Address> addresses;
 
     public User() {
+    }
+
+    public User(Integer companyId, String name) {
+        this.companyId = companyId;
+        this.name = name;
     }
 
     public User(Integer id, Integer companyId, String name) {
@@ -39,6 +47,13 @@ public class User {
         this.name = name;
     }
 
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
 
     @Override
     public String toString() {

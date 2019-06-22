@@ -10,15 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import recaton.study.mybatis.entity.Company;
 import recaton.study.mybatis.entity.User;
+import recaton.study.mybatis.mapper.CompanyMapper;
+import recaton.study.mybatis.mapper.UserMapper;
 import recaton.study.mybatis.service.CompanyService;
 import recaton.study.mybatis.service.UserService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @FixMethodOrder(MethodSorters.JVM)
 public class TestMybatis {
@@ -36,8 +36,8 @@ public class TestMybatis {
         InputStream in = Resources.getResourceAsStream(resource);
         sessionFactory = new SqlSessionFactoryBuilder().build(in);
         session = sessionFactory.openSession();
-        userService = new UserService(session);
-        companyService = new CompanyService(session);
+        userService = new UserService(session.getMapper(UserMapper.class));
+        companyService = new CompanyService(session.getMapper(CompanyMapper.class));
     }
 
     // delete 表
@@ -65,9 +65,9 @@ public class TestMybatis {
     public void testInsertUsers(){
         Company google = companyService.getCompanys("google").get(0);
         logger.info("company is: {}", google);
-        User jack = new User(null, google.getId(), "jack");
-        User mark = new User(null, google.getId(), "mark");
-        User lucy = new User(null, google.getId(), "lucy");
+        User jack = new User(google.getId(), "jack");
+        User mark = new User(google.getId(), "mark");
+        User lucy = new User(google.getId(), "lucy");
         List<User> users = Arrays.asList(jack, mark, lucy);
         Assert.assertEquals(users.size(), userService.saveUsers(users));
     }
@@ -80,12 +80,7 @@ public class TestMybatis {
 
     @Test
     public void testGetUser(){
-        Map<String, String> map = new HashMap<>();
-        map.put("name", "jack");
-        Assert.assertTrue(userService.getUsersByName(map).size() > 0);
-        map.clear();
-        map.put("name", "jack' or true or '1' = '");
-        Assert.assertEquals(0, userService.getUsersByName(map).size());
+        Assert.assertNotNull(userService.getUsersByName("jack"));
     }
 
     @AfterClass

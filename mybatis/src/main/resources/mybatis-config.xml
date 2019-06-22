@@ -4,14 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
-    <!-- 设置mybatis的日志 -->
-    <settings>
-        <setting name="logImpl" value="STDOUT_LOGGING"/>
-    </settings>
+    <!-- 设置mybatis的日志, 方便调试 -->
+<!--    <settings>-->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+<!--    </settings>-->
 
     <!-- 定义类型别名, 代替全限定名, 方便使用 -->
     <typeAliases>
-        <typeAlias type="recaton.study.mybatis.entity.User" alias="User"></typeAlias>
+        <!-- 定义别名时可以定义package, 则package下所有的类都自动获取别名, 也可以对每个类分别定义, 如下所示: -->
+<!--        <typeAlias type="recaton.study.mybatis.entity.User" alias="User"></typeAlias>-->
+<!--        <typeAlias type="recaton.study.mybatis.entity.Company" alias="Company"></typeAlias>-->
+<!--        <typeAlias type="recaton.study.mybatis.entity.Address" alias="Address"></typeAlias>-->
+        <package name="recaton.study.mybatis.entity"/>
     </typeAliases>
 
     <environments default="development">
@@ -27,9 +31,9 @@
     </environments>
 
     <mappers>
-        <mapper resource="User.xml"/>
-        <mapper resource="Company.xml"/>
-        <mapper resource="Address.xml"/>
+        <mapper resource="UserMapper.xml"/>
+        <mapper resource="CompanyMapper.xml"/>
+        <mapper resource="AddressMapper.xml"/>
     </mappers>
 
 </configuration>

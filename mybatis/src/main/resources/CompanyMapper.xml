@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="bingoal.study.mybatis.entity.CompanyMapper">
+<mapper namespace="recaton.study.mybatis.mapper.CompanyMapper">
 
     <resultMap id="companyResultMap" type="recaton.study.mybatis.entity.Company">
         <result property="id" column="id"/>
@@ -24,7 +24,7 @@
         from company c left join user u on u.company_id = c.id where c.name = #{name}
     </select>
 
-    <delete id="deleteCompanys">
+    <delete id="deleteAll">
         delete from company
     </delete>
 
