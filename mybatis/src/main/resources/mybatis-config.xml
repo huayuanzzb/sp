@@ -31,9 +31,9 @@
     </environments>
 
     <mappers>
-        <mapper resource="UserMapper.xml"/>
-        <mapper resource="CompanyMapper.xml"/>
-        <mapper resource="AddressMapper.xml"/>
+        <mapper resource="mappers/UserMapper.xml"/>
+        <mapper resource="mappers/CompanyMapper.xml"/>
+        <mapper resource="mappers/AddressMapper.xml"/>
     </mappers>
 
 </configuration>
