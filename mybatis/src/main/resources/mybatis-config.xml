@@ -4,18 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
-    <!-- 设置mybatis的日志, 方便调试 -->
-<!--    <settings>-->
-<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
-<!--    </settings>-->
+    <settings>
+        <!-- 设置mybatis的日志, 方便调试 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!-- 设置一级缓存-->
+        <setting name="localCacheScope" value="SESSION"/>
+        <!-- 设置二级缓存-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
 
     <!-- 定义类型别名, 代替全限定名, 方便使用 -->
     <typeAliases>
-        <!-- 定义别名时可以定义package, 则package下所有的类都自动获取别名, 也可以对每个类分别定义, 如下所示: -->
+        <!-- 定义别名时可以定义package, 则package下所有的类都自动获取别名 -->
+        <package name="recaton.study.mybatis.entity"/>
+        <!-- 也可以对每个类分别定义, 如下所示: -->
 <!--        <typeAlias type="recaton.study.mybatis.entity.User" alias="User"></typeAlias>-->
 <!--        <typeAlias type="recaton.study.mybatis.entity.Company" alias="Company"></typeAlias>-->
 <!--        <typeAlias type="recaton.study.mybatis.entity.Address" alias="Address"></typeAlias>-->
-        <package name="recaton.study.mybatis.entity"/>
     </typeAliases>
 
     <environments default="development">
@@ -31,9 +36,12 @@
     </environments>
 
     <mappers>
-        <mapper resource="mappers/UserMapper.xml"/>
-        <mapper resource="mappers/CompanyMapper.xml"/>
-        <mapper resource="mappers/AddressMapper.xml"/>
+        <!-- 定义别名时可以定义package, 则package下所有的xml文件都将被解析mapper -->
+        <package name="recaton/study/mybatis/mappers"/>
+        <!-- 也可以对每个类分别定义, 如下所示: -->
+<!--        <mapper resource="recaton/study/mybatis/mappers/UserMapper.xml"/>-->
+<!--        <mapper resource="recaton/study/mybatis/mappers/CompanyMapper.xml"/>-->
+<!--        <mapper resource="recaton/study/mybatis/mappers/AddressMapper.xml"/>-->
     </mappers>
 
 </configuration>

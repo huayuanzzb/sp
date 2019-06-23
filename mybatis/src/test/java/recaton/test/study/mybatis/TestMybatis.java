@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import recaton.study.mybatis.entity.Company;
 import recaton.study.mybatis.entity.User;
-import recaton.study.mybatis.mapper.CompanyMapper;
-import recaton.study.mybatis.mapper.UserMapper;
+import recaton.study.mybatis.mappers.CompanyMapper;
+import recaton.study.mybatis.mappers.UserMapper;
 import recaton.study.mybatis.service.CompanyService;
 import recaton.study.mybatis.service.UserService;
 
@@ -80,7 +80,11 @@ public class TestMybatis {
 
     @Test
     public void testGetUser(){
+        logger.info("开始第一次查询");
         Assert.assertNotNull(userService.getUsersByName("jack"));
+        logger.info("开始第二次查询, 本次查询应该从一级缓存中获取查询结果, 不会访问数据库");
+        Assert.assertNotNull(userService.getUsersByName("jack"));
+        logger.info("第二次查询结束");
     }
 
     @AfterClass

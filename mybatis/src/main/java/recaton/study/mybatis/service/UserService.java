@@ -3,7 +3,7 @@ package recaton.study.mybatis.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import recaton.study.mybatis.entity.User;
-import recaton.study.mybatis.mapper.UserMapper;
+import recaton.study.mybatis.mappers.UserMapper;
 
 import java.util.List;
 import java.util.Map;

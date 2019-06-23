@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="recaton.study.mybatis.mapper.UserMapper">
+<mapper namespace="recaton.study.mybatis.mappers.UserMapper">
 
     <!-- resultMap在mybatis中是一个强大的对象, mybatis在查出结果集后, 会自动将结果组装到一个resultMap中,
     如果select中定义了resultType, 则基于属性名将resultMap转换为resultType -->
@@ -30,4 +30,6 @@
         select id, name as alias_name from User where name = #{name}
     </select>
 
+
+    <cache/>
 </mapper>

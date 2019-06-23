@@ -1,4 +1,4 @@
-package recaton.study.mybatis.mapper;
+package recaton.study.mybatis.mappers;
 
 import recaton.study.mybatis.entity.User;
 
